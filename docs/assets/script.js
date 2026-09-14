@@ -11,13 +11,32 @@ if (year) {
   year.textContent = new Date().getFullYear();
 }
 
+// Keep clean hosted URLs compatible with the local file-based Chrome launcher.
+if (window.location.protocol === "file:") {
+  const localRoot = new URL("./", window.location.href);
+  document.querySelectorAll("a[href]").forEach((link) => {
+    const href = link.getAttribute("href");
+    if (href.startsWith("#")) return;
+    const url = new URL(href.startsWith("/") ? `.${href}` : href, localRoot);
+    if (url.protocol !== "file:") return;
+    if (url.pathname.endsWith("/")) {
+      url.pathname += "index.html";
+    } else if (!url.pathname.split("/").pop().includes(".")) {
+      url.pathname += ".html";
+    }
+    link.href = url.href;
+  });
+}
+
 if (navLinks.length) {
-  const current = window.location.pathname.split("/").pop() || "index.html";
+  const pagePath = (url) => new URL(url, window.location.href).pathname
+    .replace(/\/index\.html$/, "/")
+    .replace(/\.html$/, "")
+    .replace(/\/$/, "");
+  const current = pagePath(window.location.href);
 
   navLinks.forEach((link) => {
-    const href = link.getAttribute("href");
-
-    if (href === current || (current === "" && href === "index.html")) {
+    if (pagePath(link.href) === current) {
       link.classList.add("is-active");
       link.setAttribute("aria-current", "page");
     }
