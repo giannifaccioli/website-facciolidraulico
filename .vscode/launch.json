@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Open Facciol'idraulico",
+      "file": "${workspaceFolder}/docs/index.html",
+      "webRoot": "${workspaceFolder}/docs"
+    }
+  ]
+}
